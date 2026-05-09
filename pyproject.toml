@@ -6,11 +6,12 @@ readme = "README.md"
 authors = [
     { name = "polymorvic", email = "polymorphic.bite@gmail.com" }
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "matplotlib>=3.10.9",
     "numpy>=2.4.4",
     "opencv-python>=4.13.0.92",
+    "shapely>=2.1.2",
 ]
 
 [project.scripts]
@@ -24,4 +25,5 @@ build-backend = "uv_build"
 dev = [
     "ipykernel>=7.2.0",
     "jupyterlab>=4.5.7",
+    "ruff>=0.15.12",
 ]
