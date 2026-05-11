@@ -2,22 +2,14 @@ from typing import Iterator, TYPE_CHECKING, Self, Union
 
 import numpy as np
 
-from cvgeomkit.common import Hashable
+from cvgeomkit.common import Hashable, Numeric
 
 if TYPE_CHECKING:
     from .intersections import Intersection
 
 
-class Point[T: (int, float)](Hashable):
-    """
-    Immutable 2D point represented as a generic point with two numbers.
-
-    This class is generic in `T`, where `T` must be either `int` or `float`.
-    It implements tuple-like behavior while inheriting from Hashable.
-
-    Type Parameters:
-        T (int | float): The coordinate type.
-    """
+class Point[T: (Numeric, Numeric)](Hashable):
+    """Immutable 2D point represented as a generic point with two numbers."""
 
     __slots__ = ("_x", "_y")
 
