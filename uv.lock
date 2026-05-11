@@ -426,6 +426,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "opencv-python" },
+    { name = "pillow" },
     { name = "shapely" },
 ]
 
@@ -441,6 +442,7 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "numpy", specifier = ">=2.4.4" },
     { name = "opencv-python", specifier = ">=4.13.0.92" },
+    { name = "pillow", specifier = ">=12.2.0" },
     { name = "shapely", specifier = ">=2.1.2" },
 ]
 
