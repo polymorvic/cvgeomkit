@@ -1,28 +1,29 @@
-from typing import Sequence
-
-import numpy as np
+from pathlib import Path
+from typing import Literal, Sequence
 
 import cv2
 import numpy as np
-from pathlib import Path
-from typing import Literal
 
-from cvgeomkit.common import NumpyImage
+from cvgeomkit.common import BBoxFmt, NumpyImage
 from cvgeomkit.geometry.points import Point
 from cvgeomkit.geometry.lines import LineGroup, Line
 
 
-def xywh_to_xyxy(
+def convert_bbox(
     bbox: Sequence,
-    returns_int: bool = True
+    to_fmt: BBoxFmt,
+    returns_int: bool = True,
 ) -> tuple[int, int, int, int] | tuple[float, float, float, float]:
-    x, y, w, h = bbox
-    result = (x, y, x + w, y + h)
+    if to_fmt == BBoxFmt.XYXY:
+        x, y, w, h = bbox
+        out = (x, y, x + w, y + h)
+    else:
+        x1, y1, x2, y2 = bbox
+        out = (x1, y1, x2 - x1, y2 - y1)
 
     if returns_int:
-        return tuple(map(int, result))
-
-    return result
+        return tuple(map(int, out))
+    return out
 
 
 def rerange_hue(hue: np.ndarray) -> float:
