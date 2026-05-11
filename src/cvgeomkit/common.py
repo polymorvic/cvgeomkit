@@ -1,15 +1,30 @@
 from abc import ABC, abstractmethod
 from collections.abc import Hashable as SupportsHash
-
+from enum import StrEnum
+from typing import Self
 
 import cv2
 import numpy as np
+from PIL import Image
 
 
 type ArrayLike = np.ndarray | NumpyImage
 
 
 type Numeric = float | int
+
+
+class BBoxFmt(StrEnum):
+    XYWH = "xywh"
+    XYXY = "xyxy"
+    CXCYWH = "cxcxywh"
+
+
+class ColorSpace(StrEnum):
+    GRAY = "gray"
+    BGR = "bgr"
+    RGB = "rgb"
+    HSV = "hsv"
 
 
 class NumpyImage(np.ndarray):
@@ -25,29 +40,77 @@ class NumpyImage(np.ndarray):
     NumPy array, since it is implemented as a view of the original array.
     """
     def __new__(cls, input_array):
+        """Build a `NumpyImage` view over `input_array` (no copy if already ndarray)."""
         obj = np.asarray(input_array).view(cls)
         return obj
-    
+
+    def to_colorspace(self, dst_space: ColorSpace, src_space: ColorSpace) -> Self:
+        """Convert pixels from `src_space` to `dst_space` via OpenCV; same space returns a copy."""
+
+        if src_space == dst_space:
+            return self.copy().view(NumpyImage)
+
+        conversions = {
+            (ColorSpace.BGR, ColorSpace.RGB): cv2.COLOR_BGR2RGB,
+            (ColorSpace.RGB, ColorSpace.BGR): cv2.COLOR_RGB2BGR,
+
+            (ColorSpace.BGR, ColorSpace.GRAY): cv2.COLOR_BGR2GRAY,
+            (ColorSpace.GRAY, ColorSpace.BGR): cv2.COLOR_GRAY2BGR,
+
+            (ColorSpace.RGB, ColorSpace.GRAY): cv2.COLOR_RGB2GRAY,
+            (ColorSpace.GRAY, ColorSpace.RGB): cv2.COLOR_GRAY2RGB,
+
+            (ColorSpace.BGR, ColorSpace.HSV): cv2.COLOR_BGR2HSV,
+            (ColorSpace.HSV, ColorSpace.BGR): cv2.COLOR_HSV2BGR,
+
+            (ColorSpace.RGB, ColorSpace.HSV): cv2.COLOR_RGB2HSV,
+            (ColorSpace.HSV, ColorSpace.RGB): cv2.COLOR_HSV2RGB,
+        }
+
+        code = conversions.get((src_space, dst_space))
+        if code is None:
+            raise ValueError(
+                f"Unsupported conversion: {src_space} -> {dst_space}"
+            )
+
+        return cv2.cvtColor(self, code).view(NumpyImage)
+
     @property
     def width(self):
+        """Column count; 1 for a 1-D array."""
         return self.shape[1] if len(self.shape) > 1 else 1
-    
+
     @property
     def height(self):
+        """Row count."""
         return self.shape[0]
-    
+
     @property
     def depth(self):
+        """Channel count; 1 when there is no channel axis."""
         return self.shape[2] if len(self.shape) > 2 else 1
     
     def as_array(self):
         """Convert back to regular numpy array for compatibility"""
         return np.asarray(self)
 
+    @property
+    def as_pil(self) -> Image.Image:
+        """Pillow image backed by this array's pixel data."""
+        return Image.fromarray(self.as_array())
+
 
 class Hashable(ABC):
+    """
+    Value-based equality and hashing via `_key_()`.
+
+    Subclasses return a hashable tuple (or other immutable key); `__eq__` and
+    `__hash__` delegate to that key so instances with the same key compare equal.
+    """
+
     @abstractmethod
     def _key_(self) -> SupportsHash:
+        """Return the hashable identity used for `__hash__` and `__eq__`."""
         raise NotImplementedError
 
     def __hash__(self) -> int:

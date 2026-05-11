@@ -9,7 +9,12 @@ def iou(
     area1: list[list[Numeric]] | list[Point] | np.ndarray,
     area2: list[list[Numeric]] | list[Point] | np.ndarray,
 ) -> float:
+    """
+    Intersection-over-union of two polygons given as vertex rings.
 
+    Vertices are oriented consistently via :func:`~cvgeomkit.utils.helpers.order_clockwise`
+    before building Shapely polygons.
+    """
     area1 = order_clockwise(area1)
     area2 = order_clockwise(area2)
 
@@ -26,4 +31,5 @@ def euclidean_distance(
         point1: Point | np.ndarray | list[Numeric], 
         point2: Point | np.ndarray | list[Numeric]
 ) -> float:
+    """Euclidean distance between two 2D points (each as ``Point``, array, or pair of numbers)."""
     return np.linalg.norm(np.array(point1) - np.array(point2))
