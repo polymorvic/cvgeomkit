@@ -38,15 +38,14 @@ class NumpyImage(np.ndarray):
 
     Fully compatible with OpenCV and other libraries that expect a standard
     NumPy array, since it is implemented as a view of the original array.
-
-    Use :meth:`to_colorspace` with explicit ``src_space`` and ``dst_space`` (:class:`ColorSpace`)
-    to convert between ``gray``, ``bgr``, ``rgb``, and ``hsv`` via OpenCV.
     """
     def __new__(cls, input_array):
+        """Build a `NumpyImage` view over `input_array` (no copy if already ndarray)."""
         obj = np.asarray(input_array).view(cls)
         return obj
 
     def to_colorspace(self, dst_space: ColorSpace, src_space: ColorSpace) -> Self:
+        """Convert pixels from `src_space` to `dst_space` via OpenCV; same space returns a copy."""
 
         if src_space == dst_space:
             return self.copy().view(NumpyImage)
@@ -78,14 +77,17 @@ class NumpyImage(np.ndarray):
 
     @property
     def width(self):
+        """Column count; 1 for a 1-D array."""
         return self.shape[1] if len(self.shape) > 1 else 1
-    
+
     @property
     def height(self):
+        """Row count."""
         return self.shape[0]
-    
+
     @property
     def depth(self):
+        """Channel count; 1 when there is no channel axis."""
         return self.shape[2] if len(self.shape) > 2 else 1
     
     def as_array(self):
@@ -94,12 +96,21 @@ class NumpyImage(np.ndarray):
 
     @property
     def as_pil(self) -> Image.Image:
+        """Pillow image backed by this array's pixel data."""
         return Image.fromarray(self.as_array())
 
 
 class Hashable(ABC):
+    """
+    Value-based equality and hashing via `_key_()`.
+
+    Subclasses return a hashable tuple (or other immutable key); `__eq__` and
+    `__hash__` delegate to that key so instances with the same key compare equal.
+    """
+
     @abstractmethod
     def _key_(self) -> SupportsHash:
+        """Return the hashable identity used for `__hash__` and `__eq__`."""
         raise NotImplementedError
 
     def __hash__(self) -> int:
