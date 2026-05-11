@@ -5,6 +5,7 @@ from typing import Self
 
 import cv2
 import numpy as np
+from PIL import Image
 
 
 type ArrayLike = np.ndarray | NumpyImage
@@ -90,6 +91,10 @@ class NumpyImage(np.ndarray):
     def as_array(self):
         """Convert back to regular numpy array for compatibility"""
         return np.asarray(self)
+
+    @property
+    def as_pil(self) -> Image.Image:
+        return Image.fromarray(self.as_array())
 
 
 class Hashable(ABC):
