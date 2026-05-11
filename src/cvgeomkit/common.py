@@ -15,6 +15,7 @@ type Numeric = float | int
 class BBoxFmt(StrEnum):
     XYWH = "xywh"
     XYXY = "xyxy"
+    CXCYWH = "cxcxywh"
 
 
 class NumpyImage(np.ndarray):
