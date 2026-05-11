@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Hashable as SupportsHash
-
+from enum import StrEnum
 
 import cv2
 import numpy as np
@@ -10,6 +10,11 @@ type ArrayLike = np.ndarray | NumpyImage
 
 
 type Numeric = float | int
+
+
+class BBoxFmt(StrEnum):
+    XYWH = "xywh"
+    XYXY = "xyxy"
 
 
 class NumpyImage(np.ndarray):
