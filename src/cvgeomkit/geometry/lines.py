@@ -3,7 +3,7 @@ from typing import Iterable, Literal, Self, TYPE_CHECKING, Union
 
 import numpy as np
 
-from cvgeomkit.common import Hashable
+from cvgeomkit.common import Hashable, Numeric
 from .points import Point, transform_point
 
 if TYPE_CHECKING:
@@ -40,7 +40,7 @@ class Line(Hashable):
         self.intercept = intercept
         self.xv = xv
 
-    def _key_(self) -> tuple[numeric, numeric, numeric | None]:
+    def _key_(self) -> tuple[Numeric, Numeric, Numeric | None]:
         """
         Returns a tuple of identifying attributes used for hashing and equality comparison.
 
