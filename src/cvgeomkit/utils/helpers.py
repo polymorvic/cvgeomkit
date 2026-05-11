@@ -4,16 +4,23 @@ from typing import Literal, Sequence
 import cv2
 import numpy as np
 
-from cvgeomkit.common import BBoxFmt, NumpyImage
+from cvgeomkit.common import BBoxFmt, NumpyImage, Numeric
 from cvgeomkit.geometry.points import Point
 from cvgeomkit.geometry.lines import LineGroup, Line
 
 
 def convert_bbox(
-    bbox: Sequence,
+    bbox: Sequence[Numeric],
     to_fmt: BBoxFmt,
     returns_int: bool = True,
-) -> tuple[int, int, int, int] | tuple[float, float, float, float]:
+) -> tuple[Numeric, Numeric, Numeric, Numeric]:
+    """
+    Convert a four-number box into ``to_fmt``.
+
+    Input layout depends on ``to_fmt``: ``XYXY`` expects ``(x, y, w, h)``;
+    ``XYWH`` expects ``(x1, y1, x2, y2)``; ``CXCYWH`` expects ``(x, y, w, h)``
+    in top-left ``xywh`` form and returns center ``x, y`` plus ``w, h``.
+    """
     if to_fmt == BBoxFmt.XYXY:
         x, y, w, h = bbox
         out = (x, y, x + w, y + h)
@@ -67,6 +74,12 @@ def group_lines(lines: list[Line],
 
 
 def read_image_as_numpyimage(path: str | Path, color_mode: Literal["rgb", "hsv", "grayscale"] = "rgb") -> NumpyImage:
+    """
+    Load an image from disk as a :class:`~cvgeomkit.common.NumpyImage`.
+
+    ``color_mode`` selects the channel layout after OpenCV's BGR decode:
+    ``rgb``/``hsv`` use ``cvtColor``; ``grayscale`` uses single-channel read.
+    """
     color_mode = color_mode.lower()
     if color_mode not in {"rgb", "hsv", "grayscale"}:
         raise ValueError("color_mode must be 'RGB', 'HSV', or 'GRAYSCALE'")
@@ -84,7 +97,15 @@ def read_image_as_numpyimage(path: str | Path, color_mode: Literal["rgb", "hsv",
     return NumpyImage(img)
 
 
-def order_clockwise(points):
+def order_clockwise(
+    points: np.ndarray | Sequence[Point] | Sequence[Sequence[Numeric]],
+) -> np.ndarray:
+    """
+    Sort 2D points clockwise around their mean (centroid), by polar angle.
+
+    Accepts an ``(N, 2)`` array, a sequence of :class:`~cvgeomkit.geometry.points.Point`,
+    or nested sequences of two numbers. Fewer than three points are returned unchanged.
+    """
     if isinstance(points, np.ndarray):
         arr = np.asarray(points, dtype=float)
 
