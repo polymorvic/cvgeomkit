@@ -17,9 +17,14 @@ def convert_bbox(
     if to_fmt == BBoxFmt.XYXY:
         x, y, w, h = bbox
         out = (x, y, x + w, y + h)
-    else:
+    elif to_fmt == BBoxFmt.XYWH:
         x1, y1, x2, y2 = bbox
         out = (x1, y1, x2 - x1, y2 - y1)
+    elif to_fmt == BBoxFmt.CXCYWH:
+        x, y, w, h = bbox
+        out = (x + w / 2, y + h / 2, w, h)
+    else:
+        raise ValueError(f"unsupported to_fmt: {to_fmt!r}")
 
     if returns_int:
         return tuple(map(int, out))
