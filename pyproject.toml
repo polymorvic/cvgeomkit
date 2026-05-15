@@ -1,6 +1,6 @@
 [project]
 name = "cvgeomkit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Geometry-based image analysis toolkit"
 readme = "README.md"
 authors = [
