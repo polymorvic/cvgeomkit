@@ -420,3 +420,30 @@ def transform_line(
     pts_source: Iterable[Point] = original_line.limit_to_img(original_img)
     pts_transformed = [transform_point(p, original_x_start, original_y_start, to_global=to_global) for p in pts_source]
     return Line.from_points(*pts_transformed)
+
+
+def group_lines(lines: list[Line], 
+    thresh_theta: float | int = 5, 
+    thresh_intercept: float | int = 10
+    ) -> list[LineGroup]:
+    """
+    Group similar Line objects into LineGroups based on orientation and position thresholds.
+
+    Args:
+        lines (list[Line]): A list of Line objects to group.
+        thresh_theta (float): Maximum allowed angle difference between lines to be in the same group.
+        thresh_intercept (float): Maximum allowed intercept difference (for non-vertical lines).
+
+    Returns:
+        list[LineGroup]: A list of LineGroup objects representing grouped lines.
+    """
+    groups = []
+
+    for line in lines:
+        for group in groups:
+            if group.process_line(line, thresh_theta, thresh_intercept):
+                break
+        else:
+            groups.append(LineGroup([line]))
+
+    return groups
