@@ -1,6 +1,6 @@
 [project]
 name = "cvgeomkit"
-version = "0.1.1"
+version = "0.1.2"
 description = "Geometry-based image analysis toolkit"
 readme = "README.md"
 authors = [
@@ -12,6 +12,7 @@ dependencies = [
     "numpy>=2.4.4",
     "opencv-python>=4.13.0.92",
     "pillow>=12.2.0",
+    "pyyaml>=6.0.3",
     "shapely>=2.1.2",
 ]
 
