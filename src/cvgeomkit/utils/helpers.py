@@ -1,12 +1,13 @@
 from pathlib import Path
 from typing import Literal, Sequence
+import yaml
+import json
 
 import cv2
 import numpy as np
 
 from cvgeomkit.common import BBoxFmt, NumpyImage, Numeric
 from cvgeomkit.geometry.points import Point
-from cvgeomkit.geometry.lines import LineGroup, Line
 
 
 def convert_bbox(
@@ -44,33 +45,6 @@ def rerange_hue(hue: np.ndarray) -> float:
     Uses modulo arithmetic to keep the result within the valid hue range
     """
     return (hue + 90) % 180
-
-
-def group_lines(lines: list[Line], 
-    thresh_theta: float | int = 5, 
-    thresh_intercept: float | int = 10
-    ) -> list[LineGroup]:
-    """
-    Group similar Line objects into LineGroups based on orientation and position thresholds.
-
-    Args:
-        lines (list[Line]): A list of Line objects to group.
-        thresh_theta (float): Maximum allowed angle difference between lines to be in the same group.
-        thresh_intercept (float): Maximum allowed intercept difference (for non-vertical lines).
-
-    Returns:
-        list[LineGroup]: A list of LineGroup objects representing grouped lines.
-    """
-    groups = []
-
-    for line in lines:
-        for group in groups:
-            if group.process_line(line, thresh_theta, thresh_intercept):
-                break
-        else:
-            groups.append(LineGroup([line]))
-
-    return groups
 
 
 def read_image_as_numpyimage(path: str | Path, color_mode: Literal["rgb", "hsv", "grayscale"] = "rgb") -> NumpyImage:
@@ -125,3 +99,19 @@ def order_clockwise(
     angles = np.arctan2(arr[:, 1] - center[1], arr[:, 0] - center[0])
 
     return arr[np.argsort(-angles)]
+
+
+def load_yaml(file_path: Path | str) -> dict | None:
+    with open(file_path, encoding='utf-8') as f:
+        try:
+            return yaml.safe_load(f)
+        except Exception as e:
+            print(f'An error occured, {e}')
+
+
+def load_json(file_path: Path | str) -> dict | None:
+    with open(file_path, encoding='utf-8') as f:
+        try:
+            return json.load(f)
+        except Exception as e:
+            print(f'An error occured, {e}')
