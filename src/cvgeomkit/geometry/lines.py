@@ -56,7 +56,10 @@ class Line(Hashable):
         Returns:
             str: String representation of the line.
         """
-        return f"y = {self.slope} * x + {self.intercept}"
+        if self.xv is not None:
+            return f"y = {self.xv}"
+        else:
+            return f"y = {self.slope} * x + {self.intercept}"
 
     def copy(self) -> Self:
         """
@@ -276,7 +279,7 @@ class Line(Hashable):
         return np.degrees(np.arctan(self.slope))
 
     @classmethod
-    def from_hough_line(cls, hough_line: tuple[int, int, int, int]) -> Self:
+    def from_hough_segment(cls, hough_segment: tuple[int, int, int, int]) -> Self:
         """
         Creates a Line instance from a Hough line segment represented by two points.
 
@@ -286,7 +289,7 @@ class Line(Hashable):
         Returns:
             Line: A Line object representing the line segment.
         """
-        x1, y1, x2, y2 = hough_line
+        x1, y1, x2, y2 = hough_segment
         return cls.from_points((x1, y1), (x2, y2))
 
     @classmethod
