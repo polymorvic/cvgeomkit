@@ -1,13 +1,10 @@
-from typing import Iterator, Self, TYPE_CHECKING
+from typing import Iterator, Self
 
 import numpy as np
 
 from cvgeomkit.common import Hashable
 from cvgeomkit.geometry.points import Point, transform_point
 from cvgeomkit.geometry.lines import Line
-
-if TYPE_CHECKING:
-    from .intersections import Intersection
 
 
 class LineSegment(Hashable):
