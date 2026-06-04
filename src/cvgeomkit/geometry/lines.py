@@ -239,6 +239,13 @@ class Line(Hashable):
             return unique_points[0], unique_points[1]
 
         raise ValueError("Line does not intersect the image in at least two places.")
+    
+    
+    def to_segment(self, image: np.ndarray) -> "LineSegment":
+        from .segments import LineSegment
+
+        return LineSegment.from_line_and_image(self, image)
+    
 
     def check_point_on_line(self, point: Point, tolerance: int = None) -> bool:
         """
