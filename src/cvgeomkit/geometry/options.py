@@ -8,9 +8,16 @@ class Direction(StrEnum):
 
 class Axis(StrEnum):
     HORIZONTAL = "horizontal"
-    VERTICAL = "vertical" 
+    VERTICAL = "vertical"
 
 
 class LinePosition(StrEnum):
     TOP = "top"
     BOTTOM = "bottom"
+
+
+class ColorSpace(StrEnum):
+    GRAY = "gray"
+    BGR = "bgr"
+    RGB = "rgb"
+    HSV = "hsv"
