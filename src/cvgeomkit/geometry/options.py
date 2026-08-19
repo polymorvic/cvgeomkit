@@ -21,3 +21,8 @@ class ColorSpace(StrEnum):
     BGR = "bgr"
     RGB = "rgb"
     HSV = "hsv"
+
+
+class LineSelection(StrEnum):
+    MIN = "min"
+    MAX = "max"
