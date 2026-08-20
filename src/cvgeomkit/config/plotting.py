@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-plt.rcParams['image.cmap'] = 'gray'
+def set_cmap_gray() -> None:
+    """Set the default colormap to grayscale for matplotlib plots."""
+    plt.rcParams['image.cmap'] = 'gray'
 
