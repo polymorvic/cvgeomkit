@@ -10,6 +10,7 @@ from cvgeomkit.geometry.points.ops import transform_point
 from cvgeomkit.validators import check_if_numpy_image
 from cvgeomkit.config.debug import get_debug_mode
 from cvgeomkit.utils.visualisations import display_img
+from numpy.typing import NDArray
 
 
 def transform_line(
@@ -79,7 +80,8 @@ def lines_from_gray_img(
     min_line_len_px: int,
     max_line_gap_px: int,
     return_canny: bool = False,
-) -> list[Line] | None:
+) -> list[Line] | tuple[list[Line], NDArray]:
+    img = check_if_numpy_image(img)
     edges = cv2.Canny(img, canny_lower_thresh, canny_upper_thresh)
     segments = cv2.HoughLinesP(
         edges,
