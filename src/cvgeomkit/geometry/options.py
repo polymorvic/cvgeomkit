@@ -16,13 +16,6 @@ class LinePosition(StrEnum):
     BOTTOM = "bottom"
 
 
-class ColorSpace(StrEnum):
-    GRAY = "gray"
-    BGR = "bgr"
-    RGB = "rgb"
-    HSV = "hsv"
-
-
 class LineSelection(StrEnum):
     MIN = "min"
     MAX = "max"
