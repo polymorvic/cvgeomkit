@@ -1,9 +1,15 @@
+import cv2
+import numpy as np
+
 from cvgeomkit.geometry.lines.segment import LineSegment
 from cvgeomkit.geometry.intersections.intersection import Intersection
 from cvgeomkit.types import CollectionLike, ArrayLike
 from cvgeomkit.geometry.lines.line import Line
 from cvgeomkit.geometry.points.point import Point
 from cvgeomkit.geometry.points.ops import transform_point
+from cvgeomkit.validators import check_if_numpy_image
+from cvgeomkit.config.debug import get_debug_mode
+from cvgeomkit.utils.visualisations import display_img
 
 
 def transform_line(
@@ -60,8 +66,42 @@ def transform_line_segment(
 
 
 def line_segments_intersections(
-    segments1: list[LineSegment],
-    segments2: list[LineSegment],
-    img: ArrayLike
+    segments1: list[LineSegment], segments2: list[LineSegment], img: ArrayLike
 ) -> Intersection | None:
     pass
+
+
+def lines_from_gray_img(
+    img: ArrayLike,
+    canny_lower_thresh: int,
+    canny_upper_thresh: int,
+    hough_thresh: int,
+    min_line_len_px: int,
+    max_line_gap_px: int,
+    return_canny: bool = False,
+) -> list[Line] | None:
+    edges = cv2.Canny(img, canny_lower_thresh, canny_upper_thresh)
+    segments = cv2.HoughLinesP(
+        edges,
+        rho=1,
+        theta=np.pi / 180,
+        threshold=hough_thresh,
+        minLineLength=min_line_len_px,
+        maxLineGap=max_line_gap_px,
+    )
+
+    if get_debug_mode():
+        display_img(edges)
+        img_copy = cv2.merge([img, img, img])
+        if segments is not None:
+            for segment in segments:
+                x1, y1, x2, y2 = segment[0]
+                cv2.line(img_copy, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        display_img(img_copy)
+
+    if segments is None:
+        return []
+
+    if return_canny:
+        return [Line.from_hough_segment(*segment) for segment in segments], edges
+    return [Line.from_hough_segment(*segment) for segment in segments]
