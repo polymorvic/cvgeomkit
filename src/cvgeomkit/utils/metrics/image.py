@@ -3,10 +3,7 @@ import numpy as np
 from cvgeomkit.types import ArrayLike
 
 
-def calculate_white_pixels_ratio(
-    edges: ArrayLike,
-    mask: ArrayLike
-) -> float:
+def calculate_white_pixels_ratio(edges: ArrayLike, mask: ArrayLike) -> float:
     """Calculate what percentage of all pixels within the mask are white.
 
     Args:
@@ -26,10 +23,7 @@ def calculate_white_pixels_ratio(
     return white_pixels / mask_pixels
 
 
-def calculate_white_columns_ratio(
-    edges: ArrayLike,
-    mask: ArrayLike
-) -> float:
+def calculate_white_columns_ratio(edges: ArrayLike, mask: ArrayLike) -> float:
     """Calculate what percentage of all columns within the mask include at least one white pixel.
 
     Args:
