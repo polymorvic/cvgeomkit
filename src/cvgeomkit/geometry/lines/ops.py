@@ -1,3 +1,5 @@
+from cvgeomkit.geometry.lines.segment import LineSegment
+from cvgeomkit.geometry.intersections.intersection import Intersection
 from cvgeomkit.types import CollectionLike, ArrayLike
 from cvgeomkit.geometry.lines.line import Line
 from cvgeomkit.geometry.points.point import Point
@@ -34,3 +36,32 @@ def transform_line(
         for p in pts_source
     ]
     return Line.from_points(*pts_transformed)
+
+
+def transform_line_segment(
+    segment: LineSegment,
+    original_x_start: int,
+    original_y_start: int,
+    to_global: bool = True,
+) -> LineSegment:
+    start = transform_point(
+        segment.start,
+        original_x_start,
+        original_y_start,
+        to_global=to_global,
+    )
+    end = transform_point(
+        segment.end,
+        original_x_start,
+        original_y_start,
+        to_global=to_global,
+    )
+    return LineSegment(start, end)
+
+
+def line_segments_intersections(
+    segments1: list[LineSegment],
+    segments2: list[LineSegment],
+    img: ArrayLike
+) -> Intersection | None:
+    pass
