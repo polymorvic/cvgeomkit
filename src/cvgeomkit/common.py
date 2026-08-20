@@ -1,31 +1,12 @@
 from abc import ABC, abstractmethod
 from collections.abc import Hashable as SupportsHash
-from enum import StrEnum
 from typing import Self
 
 import cv2
 import numpy as np
 from PIL import Image
 
-
-type ArrayLike = np.ndarray | NumpyImage
-
-
-type Numeric = float | int
-
-
-class BBoxFmt(StrEnum):
-    XYWH = "xywh"
-    XYXY = "xyxy"
-    CXCYWH = "cxcxywh"
-
-
-class ColorSpace(StrEnum):
-    GRAY = "gray"
-    BGR = "bgr"
-    RGB = "rgb"
-    HSV = "hsv"
-
+from cvgeomkit.options import ColorSpace
 
 class NumpyImage(np.ndarray):
     """
@@ -89,7 +70,8 @@ class NumpyImage(np.ndarray):
     def depth(self):
         """Channel count; 1 when there is no channel axis."""
         return self.shape[2] if len(self.shape) > 2 else 1
-    
+
+    @property
     def as_array(self):
         """Convert back to regular numpy array for compatibility"""
         return np.asarray(self)
