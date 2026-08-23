@@ -12,7 +12,7 @@ from cvgeomkit.validators import check_if_numpy_image
 from cvgeomkit.config.debug import get_debug_mode
 from cvgeomkit.utils.visualisations import display_img
 from cvgeomkit.geometry.options import Axis
-
+from cvgeomkit.geometry.helpers import point_in_segment
 
 
 def transform_line(
@@ -122,3 +122,22 @@ def get_mirror_line(
         return Line(-m, b + m * (img.width - 1))
     elif axis == Axis.HORIZONTAL:
         return Line(-m, (img.height - 1) - b)
+
+
+def find_line_segments_intersection(
+    segments_a: list[LineSegment], 
+    segments_b: list[LineSegment], 
+    img: ArrayLike
+) -> Intersection | None:
+    for segment_a in segments_a:
+        for segment_b in segments_b:
+            intersection = segment_a.line.intersection(segment_b.line, img)
+
+            if (
+                intersection is not None
+                and point_in_segment(intersection, segment_a)
+                and point_in_segment(intersection, segment_b)
+            ):
+                return intersection, segment_a, segment_a
+
+    return None
