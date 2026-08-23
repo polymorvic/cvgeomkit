@@ -128,7 +128,7 @@ def find_line_segments_intersection(
     segments_a: list[LineSegment], 
     segments_b: list[LineSegment], 
     img: ArrayLike
-) -> Intersection | None:
+) -> tuple[Intersection, LineSegment, LineSegment] | None:
     for segment_a in segments_a:
         for segment_b in segments_b:
             intersection = segment_a.line.intersection(segment_b.line, img)
