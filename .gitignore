@@ -13,3 +13,4 @@ wheels/
 *.ipynb
 .env
 .DS_Store
+*.txt
