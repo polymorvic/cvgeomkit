@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from numpy.typing import NDArray
 
 from cvgeomkit.geometry.lines.segment import LineSegment
 from cvgeomkit.geometry.intersections.intersection import Intersection
@@ -10,7 +11,8 @@ from cvgeomkit.geometry.points.ops import transform_point
 from cvgeomkit.validators import check_if_numpy_image
 from cvgeomkit.config.debug import get_debug_mode
 from cvgeomkit.utils.visualisations import display_img
-from numpy.typing import NDArray
+from cvgeomkit.geometry.options import Axis
+from cvgeomkit.geometry.helpers import point_in_segment
 
 
 def transform_line(
@@ -107,3 +109,35 @@ def lines_from_gray_img(
     if return_canny:
         return [Line.from_hough_segment(*segment) for segment in segments], edges
     return [Line.from_hough_segment(*segment) for segment in segments]
+
+
+def get_mirror_line(
+    line: Line,
+    img: ArrayLike,
+    axis: Axis = Axis.VERTICAL
+) -> Line | None:
+    m, b = line.slope, line.intercept
+
+    if axis == Axis.VERTICAL:
+        return Line(-m, b + m * (img.width - 1))
+    elif axis == Axis.HORIZONTAL:
+        return Line(-m, (img.height - 1) - b)
+
+
+def find_line_segments_intersection(
+    segments_a: list[LineSegment], 
+    segments_b: list[LineSegment], 
+    img: ArrayLike
+) -> tuple[Intersection, LineSegment, LineSegment] | None:
+    for segment_a in segments_a:
+        for segment_b in segments_b:
+            intersection = segment_a.line.intersection(segment_b.line, img)
+
+            if (
+                intersection is not None
+                and point_in_segment(intersection, segment_a)
+                and point_in_segment(intersection, segment_b)
+            ):
+                return intersection, segment_a, segment_a
+
+    return None

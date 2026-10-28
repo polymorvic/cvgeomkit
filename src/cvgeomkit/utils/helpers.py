@@ -6,8 +6,9 @@ import json
 import cv2
 import numpy as np
 
-from cvgeomkit.common import BBoxFmt, NumpyImage, Numeric
-from cvgeomkit.geometry.points import Point
+from cvgeomkit.common import BBoxFmt, NumpyImage
+from cvgeomkit.geometry.points.point import Point
+from cvgeomkit.types import NumpyImage, Numeric
 
 
 def convert_bbox(

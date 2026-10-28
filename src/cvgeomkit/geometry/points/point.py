@@ -122,3 +122,54 @@ class Point[T: (Numeric, Numeric)](Hashable):
             tuple[T, T]: A tuple containing the X and Y coordinates.
         """
         return (self._x, self._y)
+
+
+    def __add__(self, another: "Point" | tuple | list | float | int) -> Self:
+        if not isinstance(another, (Point, tuple, list, float, int)):
+            raise AttributeError('only numeric scalars or Point or iterables supported')
+        
+        if isinstance(another, (tuple, list)):
+            another = Point.from_iterable(another)
+
+        if isinstance(another, (float, int)):
+            another = Point(another, another)
+
+        return Point(self.x + another.x, self.y + another.y)
+
+    def __radd__(self, another):
+        return self + another
+
+    def __mul__(self, scalar: int | float) -> Self:
+        if not isinstance(scalar, (float, int)):
+            raise AttributeError('Only numeric types supported')
+        return Point(self.x * scalar, self.y * scalar)
+
+    def __rmul__(self, scalar: int | float) -> Self: # 5 * p1
+        return self * scalar
+
+    def __sub__(self, another: "Point" | tuple | list | float | int) -> Self:
+        return self + (-another)
+    
+    def __neg__(self) -> Self:
+        return self * -1
+
+    def __rsub__(self, another) -> Self:
+        return another + (-self)
+
+    def __truediv__(self, scalar: int | float):
+        if not isinstance(scalar, (float, int)):
+            raise AttributeError('Only numeric types supported')
+
+        if scalar == 0:
+            raise ValueError('Only non-zero values supported')
+        
+        return Point(self.x / scalar, self.y / scalar)
+
+    def __rtruediv__(self, scalar: float | int) -> Self:
+        if not isinstance(scalar, (float, int)):
+            raise AttributeError('Only numeric types supported')
+        
+        if self.x == 0 or self.y == 0:
+            raise ValueError("Both x and y should be non-zero")
+
+        return Point(scalar / self.x, scalar / self.y)
