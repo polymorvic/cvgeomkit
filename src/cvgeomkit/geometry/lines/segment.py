@@ -3,7 +3,7 @@ from typing import Iterator, Self
 import numpy as np
 
 from cvgeomkit.common import Hashable
-from cvgeomkit.geometry.lines import Line
+from cvgeomkit.geometry.lines.line import Line
 from cvgeomkit.geometry.points.point import Point
 
 class LineSegment(Hashable):
