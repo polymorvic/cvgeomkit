@@ -124,7 +124,7 @@ class Point[T: (Numeric, Numeric)](Hashable):
         return (self._x, self._y)
 
 
-    def __add__(self, another: "Point" | tuple | list | float | int) -> Self:
+    def __add__(self, another: "Point | tuple | list | float | int") -> "Point":
         if not isinstance(another, (Point, tuple, list, float, int)):
             raise AttributeError('only numeric scalars or Point or iterables supported')
         
@@ -147,7 +147,7 @@ class Point[T: (Numeric, Numeric)](Hashable):
     def __rmul__(self, scalar: int | float) -> Self: # 5 * p1
         return self * scalar
 
-    def __sub__(self, another: "Point" | tuple | list | float | int) -> Self:
+    def __sub__(self, another: "Point | tuple | list | float | int") -> "Point":
         return self + (-another)
     
     def __neg__(self) -> Self:
